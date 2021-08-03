@@ -6,3 +6,5 @@ admin
 ToDo
 admin webservice
 login to this admin
+postgres
+bot
