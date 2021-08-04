@@ -1,4 +1,5 @@
 # django_react_CRM
+https://www.youtube.com/watch?v=DiSoVShaOLI
 
 admin
 admin

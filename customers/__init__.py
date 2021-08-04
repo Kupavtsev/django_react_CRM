@@ -1,0 +1,1 @@
+# This file need to be in each Django folder, so it can read all files in this folder

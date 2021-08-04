@@ -11,6 +11,14 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +28,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!_w2-)_^=t#zd$slkp-*sa^!g%pi(=k8e(o8m(t!_dy#ip8d@i'
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+# ALLOWED_HOSTS = "*"
 
 
 # Application definition
@@ -39,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'customers.apps.CustomersConfig'
+    'customers.apps.CustomersConfig',
+    'bot_customers.apps.BotCustomersConfig'
 ]
 
 MIDDLEWARE = [
@@ -96,7 +106,9 @@ DATABASES = {
         'NAME': 'antipodpiska',
         'USER': 'antipodpiska',
         'PASSWORD': '258963',
-        'HOST': 'localhost',
+        'HOST': env('DB_HOST'),
+        # 'HOST': 'localhost',
+        'PORT': env('DB_PORT'),
         'POST': '',
     }
 }
@@ -139,3 +151,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

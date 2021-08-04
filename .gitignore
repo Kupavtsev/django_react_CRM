@@ -3,3 +3,6 @@ djangoreactproject/__pycache__
 customers/__pycache__
 customers/migrations/__pycache__/
 venv_drc/
+
+djangoreactproject/.env
+.env
