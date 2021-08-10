@@ -6,3 +6,5 @@ venv_drc/
 
 djangoreactproject/.env
 .env
+
+bot_customers/__pycache__
