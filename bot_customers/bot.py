@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Telegram
-from customers.models import Customer
+# from customers.models import Customer
 import telebot
 from telebot import types
 from rest_framework.response import Response
