@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .serializers import *
-from config import TOKEN
+from .config import TOKEN
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -99,6 +99,13 @@ def process_post_data_step(message):
     user = customers_dict[chat_id]
     description = message.text
     user.description = description
+    print('User: ', user.first_name)
+    print('User: ', user.last_name)
+    print('User: ', user.email)
+    print('User: ', user.phone)
+    print('User: ', user.address)
+    print('User: ', user.description)
+    print('--------------------')
     data = {
         "first_name" :  user.first_name,
         "last_name" :  user.last_name,
@@ -107,7 +114,8 @@ def process_post_data_step(message):
         "address" :  user.address,
         "description" :  user.description
     }
-    serializer = CustomerSerializer(data)
+    print('Fullfield data: ', data)
+    serializer = CustomerSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

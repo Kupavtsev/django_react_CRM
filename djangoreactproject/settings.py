@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'customers.apps.CustomersConfig',
+    # 'bot_customers',
     'bot_customers.apps.BotCustomersConfig'
 ]
 
