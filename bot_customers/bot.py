@@ -42,7 +42,8 @@ def process_last_name_step(message):
         first_name = message.text
         user = Customers(first_name)
         customers_dict[chat_id] = user
-        msg = bot.reply_to(message, 'Введите фамилию клиента:')
+        msg = bot.send_message(chat_id, 'Введите фамилию клиента:')
+        # msg = bot.reply_to(message, 'Введите фамилию клиента:')
         bot.register_next_step_handler(msg, process_email_step)
     except Exception as e:
         bot.reply_to(message, 'process_last_name_step') 
@@ -54,7 +55,8 @@ def process_email_step(message):
         last_name = message.text
         user = customers_dict[chat_id]
         user.last_name = last_name
-        msg = bot.reply_to(message, 'Введите email клиента:')
+        msg = bot.send_message(chat_id, 'Введите email клиента:')
+        # msg = bot.reply_to(message, 'Введите email клиента:')
         bot.register_next_step_handler(msg, process_phone_step)
     except Exception as e:
         bot.reply_to(message, 'process_email_step') 
@@ -66,7 +68,8 @@ def process_phone_step(message):
         email = message.text
         user = customers_dict[chat_id]
         user.email = email
-        msg = bot.reply_to(message, 'Введите телефон клиента:')
+        msg = bot.send_message(chat_id, 'Введите телефон клиента:')
+        # msg = bot.reply_to(message, 'Введите телефон клиента:')
         bot.register_next_step_handler(msg, process_address_step)
     except Exception as e:
         bot.reply_to(message, 'process_phone_step') 
@@ -77,7 +80,8 @@ def process_address_step(message):
         phone = message.text
         user = customers_dict[chat_id]
         user.phone = phone
-        msg = bot.reply_to(message, 'Введите адрес клиента:')
+        msg = bot.send_message(chat_id, 'Введите адрес клиента:')
+        # msg = bot.reply_to(message, 'Введите адрес клиента:')
         bot.register_next_step_handler(msg, process_description_step)
     except Exception as e:
         bot.reply_to(message, 'process_address_step')
@@ -88,41 +92,61 @@ def process_description_step(message):
         address = message.text
         user = customers_dict[chat_id]
         user.address = address
-        msg = bot.reply_to(message, 'Введите описание клиента:')
+        msg = bot.send_message(chat_id, 'Введите описание клиента:')
+        # msg = bot.reply_to(message, 'Введите описание клиента:')
         bot.register_next_step_handler(msg, process_post_data_step)
     except Exception as e:
         bot.reply_to(message, 'process_description_step') 
 
 def process_post_data_step(message):
 # Two variants via POST request or direct to Base
-    telegram_id = int(message.from_user.id)
-    chat_id = message.chat.id
-    user = customers_dict[chat_id]
-    description = message.text
-    user.description = description
-    print('first_name: ', user.first_name)
-    print('last_name: ', user.last_name)
-    print('email: ', user.email)
-    print('phone: ', user.phone)
-    print('address: ', user.address)
-    print('description: ', user.description)
-    print('telegram_id: ', telegram_id)
-    print('--------------------')
-    data = {
-        "first_name" :  user.first_name,
-        "last_name" :  user.last_name,
-        "email" :  user.email,
-        "phone" :  user.phone,
-        "address" :  user.address,
-        "description" :  user.description,
-        "telegram_id" : telegram_id
-    }
-    print('Fullfield data: ', data)
-    serializer = CustomerSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        telegram_id = int(message.from_user.id)
+        chat_id = message.chat.id
+        user = customers_dict[chat_id]
+        description = message.text
+        user.description = description
+        print('first_name: ', user.first_name)
+        print('last_name: ', user.last_name)
+        print('email: ', user.email)
+        print('phone: ', user.phone)
+        print('address: ', user.address)
+        print('description: ', user.description)
+        print('telegram_id: ', telegram_id)
+        print('--------------------')
+        data = {
+            "first_name" :  user.first_name,
+            "last_name" :  user.last_name,
+            "email" :  user.email,
+            "phone" :  user.phone,
+            "address" :  user.address,
+            "description" :  user.description,
+            "telegram_id" : telegram_id
+        }
+        print('Fullfield data: ', data)
+
+        # Keyboard restart
+        markup_restart = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True, resize_keyboard = True)
+        button_restart = types.KeyboardButton(text='начать заново')
+        markup_restart.add(button_restart)
+        msg = bot.send_message(chat_id, 'Вы добавили нового клиента\n\nСпасибо за то, что воспользовались нашим сервисом 🙏', reply_markup=markup_restart)
+
+        form = msg.text
+        if (form == u'Вы добавили нового клиента\n\nСпасибо за то, что воспользовались нашим сервисом 🙏'):
+            bot.register_next_step_handler(msg, send_welcome)
+        else: print('else')
+        # # Keyboard restart end
+
+        serializer = CustomerSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        bot.reply_to(message, 'process_post_data_step')
+
+    
 
 
 
