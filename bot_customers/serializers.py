@@ -12,4 +12,5 @@ class CustomerSerializer(serializers.ModelSerializer):
                   'email',
                   'phone',
                   'address',
-                  'description')
+                  'description',
+                  'telegram_id')

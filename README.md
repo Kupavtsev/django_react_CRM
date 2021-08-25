@@ -10,5 +10,6 @@ login to this admin
 postgres
 bot
 
+/frontend npm start
 ./manage.py run_bot
 ./manage.py runserver

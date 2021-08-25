@@ -95,16 +95,18 @@ def process_description_step(message):
 
 def process_post_data_step(message):
 # Two variants via POST request or direct to Base
+    telegram_id = int(message.from_user.id)
     chat_id = message.chat.id
     user = customers_dict[chat_id]
     description = message.text
     user.description = description
-    print('User: ', user.first_name)
-    print('User: ', user.last_name)
-    print('User: ', user.email)
-    print('User: ', user.phone)
-    print('User: ', user.address)
-    print('User: ', user.description)
+    print('first_name: ', user.first_name)
+    print('last_name: ', user.last_name)
+    print('email: ', user.email)
+    print('phone: ', user.phone)
+    print('address: ', user.address)
+    print('description: ', user.description)
+    print('telegram_id: ', telegram_id)
     print('--------------------')
     data = {
         "first_name" :  user.first_name,
@@ -112,7 +114,8 @@ def process_post_data_step(message):
         "email" :  user.email,
         "phone" :  user.phone,
         "address" :  user.address,
-        "description" :  user.description
+        "description" :  user.description,
+        "telegram_id" : telegram_id
     }
     print('Fullfield data: ', data)
     serializer = CustomerSerializer(data=data)

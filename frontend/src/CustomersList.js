@@ -25,17 +25,23 @@ class  CustomersList  extends  Component {
 
     handleDelete(e,pk){             // для удаления клиента по pk
         let  self  =  this;
-        customersService.deleteCustomer({pk :  pk}).then(()=>{
-            let  newArr  =  self.state.customers.filter((obj) => {
-                return  obj.pk  !==  pk;
+
+        if( window.confirm('Are you surewant to delete ?')) {
+            customersService.deleteCustomer({pk :  pk}).then(()=>{
+                let  newArr  =  self.state.customers.filter((obj) => {
+                    return  obj.pk  !==  pk;
+                });
+                self.setState({customers:  newArr})
             });
-            self.setState({customers:  newArr})
-        });
+        }
+        else {
+            
+        }
     }
 
     nextPage(){
-        var  self  =  this;
-        customersService.getCustomersByURL(this.state.nextPageURL).then((result) => {
+        let  self  =  this;
+        customersService.getCustomersByURL(self.state.nextPageURL).then((result) => {
             self.setState({ customers:  result.data, nextPageURL:  result.nextlink})
         });
     }
@@ -54,6 +60,7 @@ render() {
                 <th>Email</th>
                 <th>Address</th>
                 <th>Description</th>
+                <th>telegram_id</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -67,6 +74,7 @@ render() {
                     <td>{c.email}</td>
                     <td>{c.address}</td>
                     <td>{c.description}</td>
+                    <td>{c.telegram_id}</td>
                     <td>
                     <button  onClick={(e)=>  this.handleDelete(e,c.pk) }> Delete</button>
                     <a  href={"/customer/" + c.pk}> Update</a>
