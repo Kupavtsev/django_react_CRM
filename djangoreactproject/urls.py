@@ -20,8 +20,13 @@ from customers import views
 from django.conf.urls import url
 
 urlpatterns = [
+    path('register/', views.registerPage, name='register'),
+    path('login/', views.loginPage, name='login'),
+    path('logout/', views.logoutUser, name='logout'),
+    path('testpage', views.testPage, name='testpage'),
+
     path('admin/', admin.site.urls),
     
-    url(r'^api/customers/$', views.customers_list),
+    url(r'^api/customers/$', views.customers_list, name='customers_api'),
     url(r'^api/customers/(?P<pk>[0-9]+)$', views.customers_detail),
 ]

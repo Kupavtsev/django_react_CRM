@@ -1,18 +1,77 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
 
+from django.contrib.auth import authenticate, login, logout
+
+# from django.contrib.messages import constants as messages
+from django.contrib import messages
+
+from django.contrib.auth.decorators import login_required
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 from .models import Customer
 from .serializers import *
+from .forms import CreateUserForm
 
 
 # Create your views here.
 
+# Authorization
+def registerPage(request):
+    if request.user.is_authenticated:
+        return redirect("testpage")
+    else:
+        form = CreateUserForm()
+        # form = UserCreationForm()
+
+        if request.method == 'POST':
+            form = CreateUserForm(request.POST)
+            # form = UserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                user = form.cleaned_data.get('username')
+                messages.success(request, 'Created user ' + user)
+
+                return redirect('login')
+
+        context = {'form' : form}    # Это информация, которую мы передаем ввиде словаря в наш шаблон
+        return render(request, 'accounts/register.html', context)
+
+def loginPage(request):
+    if request.user.is_authenticated:
+        return redirect("testpage")
+    else:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect('testpage')
+            else:
+                messages.info(request, 'Username or password is incorrect')
+
+        context = {}            
+        return render(request, 'accounts/login.html', context)
+
+@login_required(login_url = 'login')
+def testPage(request):
+    context = {}
+    return render(request, 'accounts/testpage.html', context)
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
+
 @api_view(['GET', 'POST'])
+# @login_required(login_url = 'login')
 def customers_list(request):
     """
     List  customers, or create a new customer.
@@ -72,3 +131,4 @@ def customers_detail(request, pk):
     elif request.method == 'DELETE':
         customer.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
