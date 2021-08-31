@@ -3,9 +3,12 @@ frontend/node_modules
 djangoreactproject/__pycache__
 customers/__pycache__
 customers/migrations/__pycache__/
-venv_drc/
-
-djangoreactproject/.env
-.env
-
 bot_customers/__pycache__
+venv_drc/
+djangoreactproject/.env
+# customers/__pycache__/management/__pycache__/
+bot_customers/management/__pycache__/__init__.cpython-37.pyc
+bot_customers/management/__pycache__/__init__.cpython-39.pyc
+bot_customers/migrations/__pycache__/__init__.cpython-37.pyc
+customers/migrations/__pycache__/__init__.cpython-37.pyc
+.env
