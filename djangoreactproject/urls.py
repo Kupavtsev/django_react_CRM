@@ -22,10 +22,10 @@ from django.conf.urls import url
 urlpatterns = [
     path('api/', include('customers.urls'), name='account_api'),
     # path('api/', include('customers.urls'), name='register_rest'),
-    path('register/', views.registerPage, name='register'),
-    path('login/', views.loginPage, name='login'),
-    path('logout/', views.logoutUser, name='logout'),
-    path('testpage/', views.testPage, name='testpage'),
+    # path('register/', views.registerPage, name='register'),
+    # path('login/', views.loginPage, name='login'),
+    # path('logout/', views.logoutUser, name='logout'),
+    # path('testpage/', views.testPage, name='testpage'),
 
     path('admin/', admin.site.urls),
     

@@ -23,82 +23,83 @@ from .forms import CreateUserForm
 
 # Create your views here.
 
-# @api_view(['POST',])      # Это открывает внешний доступ!!!!
-# def registerPageRest(request):
-
-#     if request.method == 'POST':
-#         serializer = RegistrationSerializer(data=request.data)
-#         data = {}
-
-#         if serializer.is_valid():
-#             account = serializer.save()
-#             data['response'] = 'success of register'
-#             data['username'] = account.username
-#             data['email'] = account.email
-#             # token = Token.objects.get(user=account).key
-#             # data['token'] = token
-#         else:
-#             data = serializer.errors
-#         return Response(data)
-
 @api_view(['POST',])      # Это открывает внешний доступ!!!!
 def registerPageRest(request):
 
     if request.method == 'POST':
-        form = CreateUserForm()
+        serializer = RegistrationSerializer(data=request.data)
         data = {}
 
-        if form.is_valid():
-            account = form.save()
+        if serializer.is_valid():
+            account = serializer.save()
             data['response'] = 'success of register'
-            data['username'] = form.cleaned_data.get('username')
+            data['username'] = account.username
             data['email'] = account.email
-            # token = Token.objects.get(user=account).key
-            # data['token'] = token
+            token = Token.objects.get(user=account).key
+            data['token'] = token
         else:
-            data = form.errors
+            data = serializer.errors
         return Response(data)
+
+# Это как и первый, только через Форму
+# @api_view(['POST',])      # Это открывает внешний доступ!!!!
+# def registerPageRest(request):
+
+#     if request.method == 'POST':
+#         form = CreateUserForm()
+#         data = {}
+
+#         if form.is_valid():
+#             account = form.save()
+#             data['response'] = 'success of register'
+#             data['username'] = form.cleaned_data.get('username')
+#             data['email'] = account.email
+#             # token = Token.objects.get(user=account).key
+#             # data['token'] = token
+#         else:
+#             data = form.errors
+#         return Response(data)
 
 
 # Authorization
-def registerPage(request):
-    if request.user.is_authenticated:
-        return redirect("testpage")
-    else:
-        form = CreateUserForm()
-        # form = UserCreationForm()
+# def registerPage(request):
+#     if request.user.is_authenticated:
+#         return redirect("testpage")
+#     else:
+#         form = CreateUserForm()
+#         # form = UserCreationForm()
 
-        if request.method == 'POST':
-            form = CreateUserForm(request.POST)
-            # form = UserCreationForm(request.POST)
-            if form.is_valid():
-                form.save()
-                user = form.cleaned_data.get('username')
-                messages.success(request, 'Created user ' + user)
+#         if request.method == 'POST':
+#             form = CreateUserForm(request.POST)
+#             # form = UserCreationForm(request.POST)
+#             if form.is_valid():
+#                 form.save()
+#                 user = form.cleaned_data.get('username')
+#                 messages.success(request, 'Created user ' + user)
 
-                return redirect('login')
+#                 return redirect('login')
 
-        context = {'form' : form}    # Это информация, которую мы передаем ввиде словаря в наш шаблон
-        return render(request, 'accounts/register.html', context)     
+#         context = {'form' : form}    # Это информация, которую мы передаем ввиде словаря в наш шаблон
+#         return render(request, 'accounts/register.html', context)     
 
-def loginPage(request):
-    if request.user.is_authenticated:
-        return redirect("testpage")
-    else:
-        if request.method == 'POST':
-            username = request.POST.get('username')
-            password = request.POST.get('password')
+# def loginPage(request):
+#     if request.user.is_authenticated:
+#         return redirect("testpage")
+#     else:
+#         if request.method == 'POST':
+#             username = request.POST.get('username')
+#             password = request.POST.get('password')
 
-            user = authenticate(request, username=username, password=password)
+#             user = authenticate(request, username=username, password=password)
 
-            if user is not None:
-                login(request, user)
-                return redirect('testpage')
-            else:
-                messages.info(request, 'Username or password is incorrect')
+#             if user is not None:
+#                 login(request, user)
+#                 return redirect('testpage')
+#             else:
+#                 messages.info(request, 'Username or password is incorrect')
 
-        context = {}            
-        return render(request, 'accounts/login.html', context)
+#         context = {}            
+#         return render(request, 'accounts/login.html', context)
 
 @login_required(login_url = 'login')
 def testPage(request):
