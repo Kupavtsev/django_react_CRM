@@ -10,7 +10,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 
@@ -112,6 +113,7 @@ def logoutUser(request):
 
 @api_view(['GET', 'POST'])
 # @login_required(login_url = 'login')
+@permission_classes((IsAuthenticated,))
 def customers_list(request):
     """
     List  customers, or create a new customer.
@@ -139,6 +141,11 @@ def customers_list(request):
         return Response({'data': serializer.data , 'count': paginator.count, 'numpages' : paginator.num_pages, 'nextlink': '/api/customers/?page=' + str(nextPage), 'prevlink': '/api/customers/?page=' + str(previousPage)})
 
     elif request.method == 'POST':
+
+        # 5:50 ????
+        account = request.user
+
+
         serializer = CustomerSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -146,8 +153,12 @@ def customers_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+# The User which is created customer, only can do this operations
+# For this I need to add User/Author to table of Customers
+# And this is Telegram_id !!!!!!!
+# The same I need to do with Telega
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((IsAuthenticated,))
 def customers_detail(request, pk):
     """
     Retrieve, update or delete a customer by id/pk.
@@ -157,10 +168,18 @@ def customers_detail(request, pk):
     except Customer.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+
+
+
     if request.method == 'GET':
         serializer = CustomerSerializer(customer,context={'request': request})
         return Response(serializer.data)
 
+    user = request.user
+    if customer.telegram_id != user:
+        return Response({'response': "You don't have permissions to edit that."})
+    # Do I need to do elif lower ????
+    
     elif request.method == 'PUT':
         serializer = CustomerSerializer(customer, data=request.data,context={'request': request})
         if serializer.is_valid():
