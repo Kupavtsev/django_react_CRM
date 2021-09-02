@@ -6,8 +6,23 @@ from telebot import types
 from rest_framework.response import Response
 from rest_framework import status
 
+from .models import UserTelegram
 from .serializers import *
 from .config import TOKEN
+
+# Я могу создать массив из айдишников или обращаться к конкретному айди
+
+tele_users = UserTelegram.objects.all()
+print(type(tele_users))
+print(len(tele_users))
+exact_tele_user = tele_users[1].telegram_id
+# users = tele_users[:].telegram_id
+# tele_users_list = []
+# for user in tele_users:
+#     tele_users_list.append(user.telegram_id)
+#     print('user.telegram_id: ', user.telegram_id)
+# print('exact_tele_user: ', users)
+# print(type(users))
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -33,7 +48,9 @@ class Customers:
 # Add menu with buttons
 def send_welcome(message):
     chat_id = message.chat.id
-    msg = bot.send_message(chat_id, 'Введите имя клиента: ')
+    username = message.from_user.full_name
+    user_id = message.from_user.id
+    msg = bot.send_message(chat_id, f'Здравствуйте {username}👋\nYour id is {user_id}\nВведите имя клиента: ')
     bot.register_next_step_handler(msg, process_last_name_step)
 
 def process_last_name_step(message):
