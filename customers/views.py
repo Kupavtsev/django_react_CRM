@@ -143,10 +143,12 @@ def customers_list(request):
     elif request.method == 'POST':
 
         # 5:50 ????
+        # Таким образом в поле telegram_id передается имя пользователя
         account = request.user
+        user_customer = Customer(telegram_id=account)
+        print(user_customer)
 
-
-        serializer = CustomerSerializer(data=request.data)
+        serializer = CustomerSerializer(user_customer, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -170,13 +172,14 @@ def customers_detail(request, pk):
 
 
 
-
     if request.method == 'GET':
         serializer = CustomerSerializer(customer,context={'request': request})
         return Response(serializer.data)
 
     user = request.user
-    if customer.telegram_id != user:
+    # print(type(str(user)))
+    # print(type(customer.telegram_id))
+    if customer.telegram_id != str(user):
         return Response({'response': "You don't have permissions to edit that."})
     # Do I need to do elif lower ????
     
