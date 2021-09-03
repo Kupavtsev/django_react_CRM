@@ -39,7 +39,7 @@ class MyAccountManager(BaseUserManager):
 
 
 class Account(AbstractBaseUser):
-    email 					= models.EmailField(verbose_name="email", max_length=60, unique=True)
+    email 					= models.EmailField(verbose_name="email", max_length=60, unique=True, db_index=True)
     username 				= models.CharField(max_length=30, unique=True)
     date_joined				= models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login				= models.DateTimeField(verbose_name='last login', auto_now=True)
@@ -72,11 +72,18 @@ class Customer(models.Model):
     phone = models.CharField(max_length=25)
     address =  models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    telegram_id = models.TextField(blank=True, null=True)
+    telegram_id = models.TextField(blank=True, null=True, verbose_name='User Name/ID')
     createdAt = models.DateTimeField("Created At", auto_now_add=True)
+
+    # user = models.ForeignKey('Account', on_delete=models.PROTECT, verbose_name='Рубрика')
 
     def __str__(self):
         return self.first_name
+
+    class Meta:
+        verbose_name_plural = 'Клиенты'
+        verbose_name = 'Клиент'
+        ordering = ['-createdAt']
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

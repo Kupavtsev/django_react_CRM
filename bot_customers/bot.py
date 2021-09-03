@@ -13,15 +13,16 @@ from .config import TOKEN
 # Я могу создать массив из айдишников или обращаться к конкретному айди
 
 tele_users = UserTelegram.objects.all()
-print(type(tele_users))
-print(len(tele_users))
-exact_tele_user = tele_users[1].telegram_id
+# print(type(tele_users))
+# print(len(tele_users))
+# exact_tele_user = tele_users[1].telegram_id
+
 # users = tele_users[:].telegram_id
-# tele_users_list = []
-# for user in tele_users:
-#     tele_users_list.append(user.telegram_id)
-#     print('user.telegram_id: ', user.telegram_id)
-# print('exact_tele_user: ', users)
+tele_users_list = []
+for user in tele_users:
+    tele_users_list.append(user.telegram_id)
+    print('user.telegram_id: ', user.telegram_id)
+print('tele_users_list: ', tele_users_list)
 # print(type(users))
 
 bot = telebot.TeleBot(TOKEN)
@@ -47,11 +48,15 @@ class Customers:
 # Add check if user registred
 # Add menu with buttons
 def send_welcome(message):
+    user_id = message.from_user.id
     chat_id = message.chat.id
     username = message.from_user.full_name
-    user_id = message.from_user.id
-    msg = bot.send_message(chat_id, f'Здравствуйте {username}👋\nYour id is {user_id}\nВведите имя клиента: ')
-    bot.register_next_step_handler(msg, process_last_name_step)
+    try:
+        UserTelegram.objects.get(telegram_id=user_id)
+        msg = bot.send_message(chat_id, f'Здравствуйте {username}👋\nYour id is {user_id}\nВведите имя клиента: ')
+        bot.register_next_step_handler(msg, process_last_name_step)
+    except: 
+        msg = bot.send_message(chat_id, f'Здравствуйте {username}👋\nYour id is {user_id} not registred\nВам необходимо зарегестрироваться!')
 
 def process_last_name_step(message):
     try:
