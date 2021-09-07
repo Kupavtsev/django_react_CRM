@@ -22,11 +22,11 @@ class UserTelegram(models.Model):
 
 class UserTelegramRegister:
     def __init__(self, first_name):
-        self.first_name = first_name
-        self.last_name  = None
-        self.email      = None
-        self.telegram_id= None
-        self.phone      = None
+        self.first_name     = first_name
+        self.last_name      = None
+        self.email          = None
+        self.telegram_id    = None
+        self.phone          = None
 
         def __str__(self):
             return self.first_name

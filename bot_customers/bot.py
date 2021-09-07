@@ -85,29 +85,29 @@ def process_phone_step( message ):
     except Exception as e:
         bot.reply_to( message, 'process_phone_step' ) 
 # ===============
-def process_address_step(message):
+def process_address_step( message ):
     try:
-        chat_id = message.chat.id
-        phone = message.text
-        user = customers_dict[chat_id]
-        user.phone = phone
-        msg = bot.send_message(chat_id, 'Введите адрес клиента:')
+        chat_id     = message.chat.id
+        phone       = message.text
+        user        = customers_dict[chat_id]
+        user.phone  = phone
+        msg         = bot.send_message( chat_id, 'Введите адрес клиента:' )
         # msg = bot.reply_to(message, 'Введите адрес клиента:')
-        bot.register_next_step_handler(msg, process_description_step)
+        bot.register_next_step_handler( msg, process_description_step )
     except Exception as e:
-        bot.reply_to(message, 'process_address_step')
+        bot.reply_to( message, 'process_address_step' )
 
-def process_description_step(message):
+def process_description_step( message ):
     try:
-        chat_id = message.chat.id
-        address = message.text
-        user = customers_dict[chat_id]
-        user.address = address
-        msg = bot.send_message(chat_id, 'Введите описание клиента:')
+        chat_id     = message.chat.id
+        address     = message.text
+        user        = customers_dict[chat_id]
+        user.address= address
+        msg         = bot.send_message( chat_id, 'Введите описание клиента:' )
         # msg = bot.reply_to(message, 'Введите описание клиента:')
-        bot.register_next_step_handler(msg, process_post_data_step)
+        bot.register_next_step_handler (msg, process_post_data_step )
     except Exception as e:
-        bot.reply_to(message, 'process_description_step') 
+        bot.reply_to( message, 'process_description_step' ) 
 
 def process_post_data_step(message):
 # Two variants via POST request or direct to Base
@@ -117,14 +117,14 @@ def process_post_data_step(message):
         user                = customers_dict[chat_id]
         description         = message.text
         user.description    = description
-        print('first_name: ',   user.first_name)
-        print('last_name: ',    user.last_name)
-        print('email: ',        user.email)
-        print('phone: ',        user.phone)
-        print('address: ',      user.address)
-        print('description: ',  user.description)
-        print('telegram_id: ',  telegram_id)
-        print('--------------------')
+        print( 'first_name: ',   user.first_name )
+        print( 'last_name: ',    user.last_name )
+        print( 'email: ',        user.email )
+        print( 'phone: ',        user.phone )
+        print( 'address: ',      user.address )
+        print( 'description: ',  user.description )
+        print( 'telegram_id: ',  telegram_id )
+        print( '--------------------' )
         data = {
             "first_name"    : user.first_name,
             "last_name"     : user.last_name,
